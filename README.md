@@ -5,4 +5,3 @@ Chapter 03: Transformer 推理流水线拆解：Prefill（前序阶段）与 Dec
 Chapter 04: vLLM 核心源码剖析：Scheduler 调度机制与 PagedAttention 显存管理
 
 
-![](images/CleanShot%202026-09-11%20at%2013.46.50@2x.png)
