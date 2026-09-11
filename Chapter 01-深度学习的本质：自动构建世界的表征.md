@@ -1,12 +1,13 @@
 
 **1.起始：我们为什么要讨论“表征学习”？**
+
 ![](https://my-obsidian-images-1485830040.cos.ap-shanghai.myqcloud.com//Users/scarlet/Documents/Obsidian%20Vault/imagesCleanShot%202026-09-11%20at%2013.54.13%402x.png)
 
 这个问题起于看张小珺与谢赛宁访谈时产生的疑问：表征学习是什么？
 
 抽象和形式化的任务对人类而言是最困难的脑力任务之一。AI 系统超越传统规则系统的核心，在于它具备**自己获取知识的能力**——即从原始数据中提取模式的能力，这就是机器学习。
 
-但我一直在思考一个核心问题：**深度学习（Deep Learning）的核心贡献究竟是什么？** 它不仅仅是让机器学会了分类，它最伟大的贡献，是让机器能够自动构建**“世界的表征”（Worlds' Representation）**，从而彻底解决了表示学习（Representation Learning）中的核心痛点。
+但我一直在思考一个核心问题：**深度学习（Deep Learning）的核心贡献究竟是什么？** 它不仅仅是让机器学会了分类，它最伟大的贡献，是让机器能够自动构建“世界的表征”（Worlds' Representation，从而彻底解决了表示学习（Representation Learning）中的核心痛点。
 
 **2.认识的跃迁：从人工特征工程（Feature Engineering）到工具自动化**
 
@@ -40,4 +41,5 @@
 -----
 
 **后记**
+
 在 RAG 和 LLM 时代，世界的表征变成了海量的 Token 和 KV Cache（键值缓存）。当模型层数变深、参数变大时，如何高效地在 GPU 显存中存储、传输和计算这些表征，成为了新的系统瓶颈。这也是 vLLM 等推理框架需要引入 PagedAttention（显存分页表征管理）的核心原因。有些概念是我感兴趣的点，慢慢填坑～
