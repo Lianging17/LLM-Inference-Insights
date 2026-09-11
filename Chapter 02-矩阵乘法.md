@@ -9,5 +9,5 @@
 - 和Java对比
 	- “在传统的 Java 开发中，我们习惯于通过对象引用（Object Reference）和堆内存中的字段来组织业务逻辑；但在 AI 系统级研发中，世界的万物全部被抽象为了由连续内存排布的 Tensor。模型的每一层前向传播，本质上都是在进行大密度的矩阵乘法（GEMM）。通过这个小实验，我直观感受到了大模型推理中 Prefill 和 Decode 两个阶段完全不同的硬件瓶颈（算力受限 vs 带宽受限）。这种对硬件行为的感知，正是我接下来去剖析 vLLM 调度优化和 PagedAttention 机制的理论基石。”
 - 矩阵乘法 GEMM （**Ge**neral **M**atrix **M**ultiply）
-	- 公式$$C = \alpha(A \times B) + \beta C$$
-	
+	- 公式$$C = \alpha(A \times B) + \beta C$$这里的 $\alpha$ 和 $\beta$ 是系数。这个公式可以同时支持矩阵相乘、按比例缩放以及加上一个偏置矩阵（类似于深度学习中的 $W \times X + b$），形式非常通用。
+- 
