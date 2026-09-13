@@ -74,7 +74,112 @@ A_contiguous     内存连续性: True
 
 按照原来的代码，结果不够明显，数据没有足够的显著性说明Chapter 02中提到的性能差异和所预想的时间、带宽差别，所以在这里我又单独添加了一个模块的代码来更加显性的说明上述问题，运行在GPU上。但是因为硬件设备有限，所究原理就停到这里。
 
-```
+```import time
+import torch
+
+# ============================================================
+# 0. 环境检查
+# ============================================================
+assert torch.cuda.is_available(), "需要 GPU"
+device = "cuda"
+props = torch.cuda.get_device_properties(0)
+print(f"GPU: {props.name}")
+print(f"显存: {props.total_memory / 1e9:.2f} GB")
+print(f"SM 数量: {props.multi_processor_count}")
+print()
+
+# 常见 GPU 的峰值带宽（GB/s），按需修改或查你的显卡规格
+PEAK_BW_GBPS = {
+    "T4": 320,
+    "V100": 900,
+    "A100": 1555,
+    "H100": 3350,
+    "RTX 3090": 936,
+    "RTX 4090": 1008,
+}
+gpu_peak = None
+for name, bw in PEAK_BW_GBPS.items():
+    if name in props.name:
+        gpu_peak = bw
+        break
+if gpu_peak is None:
+    print("⚠️ 未识别 GPU 型号，请手动填入峰值带宽")
+    gpu_peak = float(input("请输入峰值带宽 (GB/s): "))
+print(f"使用峰值带宽参考值: {gpu_peak} GB/s\n")
+
+# ============================================================
+# 1. 通用 benchmark 函数
+# ============================================================
+def bench_matmul(M, K, N, n_warmup=5, n_iter=30):
+    A = torch.randn(M, K, device=device)
+    B = torch.randn(K, N, device=device)
+
+    # warmup：让 cuBLAS 选 kernel、分配 workspace、填满 cache
+    for _ in range(n_warmup):
+        C = torch.matmul(A, B)
+    torch.cuda.synchronize()
+
+    # 正式计时：所有 kernel 下发完后同步，取平均
+    start = time.perf_counter()
+    for _ in range(n_iter):
+        C = torch.matmul(A, B)
+    torch.cuda.synchronize()
+    end = time.perf_counter()
+
+    t_ms = (end - start) / n_iter * 1000
+
+    bytes_moved = 4 * (M * K + K * N + M * N)
+    flops = 2 * M * K * N
+    bw_eff = bytes_moved / (t_ms / 1000) / 1e9  # GB/s
+    ai = flops / bytes_moved                     # FLOPs/Byte
+
+    return {
+        "M": M, "K": K, "N": N,
+        "t_ms": t_ms,
+        "GFLOPs": flops / (t_ms / 1000) / 1e9,
+        "bytes_MB": bytes_moved / 1e6,
+        "bw_eff": bw_eff,
+        "ai": ai,
+        "bw_util": bw_eff / gpu_peak * 100,
+    }
+
+# ============================================================
+# 2. 三种场景对比
+# ============================================================
+# 为了不让权重被 L2 缓存完全吸收，K、N 取大一点
+# 2048x2048 float32 权重 ≈ 16 MB，可能被 L2 缓存吃下
+# 4096x4096 float32 权重 ≈ 64 MB，稳超 L2
+configs = [
+    ("Prefill (M=2048)", 2048, 4096, 4096),
+    ("Decode  (M=1)   ", 1,    4096, 4096),
+]
+
+print(f"{'场景':<20} {'耗时(ms)':>10} {'GFLOPs':>10} "
+      f"{'字节(MB)':>10} {'有效带宽(GB/s)':>15} {'带宽利用率':>10} {'AI':>8}")
+print("-" * 95)
+
+for name, M, K, N in configs:
+    r = bench_matmul(M, K, N)
+    print(f"{name:<20} {r['t_ms']:>10.3f} {r['GFLOPs']:>10.2f} "
+          f"{r['bytes_MB']:>10.2f} {r['bw_eff']:>15.2f} "
+          f"{r['bw_util']:>9.1f}% {r['ai']:>8.2f}")
 
 ```
+运行结果如下：
+```
+GPU: Tesla T4
+显存: 15.64 GB
+SM 数量: 40
+
+使用峰值带宽参考值: 320 GB/s
+
+场景                       耗时(ms)     GFLOPs     字节(MB)      有效带宽(GB/s)      带宽利用率       AI
+-----------------------------------------------------------------------------------------------
+Prefill (M=2048)         20.092    3420.27     134.22            6.68       2.1%   512.00
+Decode  (M=1)             0.287     116.81      67.14          233.74      73.0%     0.50
+```
+
+大矩阵乘法模拟 prefill，大量token并行计算。M=1的情况模拟Decode过程，单token矩阵乘法。计算量上：
+	
+	
 ### A.4 模块三：内存布局
