@@ -3,7 +3,7 @@
 
 ### A.1 完整代码
 
-```python
+```
 import time
 import torch
 
@@ -42,3 +42,26 @@ A_contiguous = A_non_contiguous.clone().contiguous()
 
 print(f"A_non_contiguous 内存连续性: {A_non_contiguous.is_contiguous()}")
 print(f"A_contiguous     内存连续性: {A_contiguous.is_contiguous()}")
+```
+
+运行结果如下：
+```
+原始特征 (4维): [[1.2000000476837158, 0.5, -0.800000011920929, 2.0999999046325684]]
+映射后的表征空间 (3维隐向量): [[-0.6859293580055237, 1.2268404960632324, 1.5185149908065796]]
+
+【Prefill 模拟】大矩阵乘法 [2048x2048] * [2048x2048] 耗时: 312.11 ms
+【Decode 模拟】单Token矩阵乘法 [1x2048] * [2048x2048] 耗时: 1.53 ms
+
+A_non_contiguous 内存连续性: False
+A_contiguous     内存连续性: True
+```
+
+### A.2 模块一：表征空间转换
+
+
+
+### A.3 模块二：Prefill 与 Decode 瓶颈
+
+
+
+### A.4 模块三：内存布局
