@@ -36,9 +36,7 @@ $$
 **现在的 Transformer。** 词向量（Embedding）网络结构把每一个词都变成了一串包含几千个数字的坐标。含义相近的词，在空间里的距离就很近。自注意力机制（Self-Attention）是 Transformer 结构的灵魂，它能让 AI 根据上下文来决定一个词的精确含义：
 
 $$
-
-y = \text{Attention}(\text{Context})
-
+C = \alpha(A \times B) + \beta C
 $$
 
 ## 4. 维度跨越的本质：表征转换
