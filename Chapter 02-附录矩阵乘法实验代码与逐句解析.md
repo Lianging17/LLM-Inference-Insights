@@ -192,5 +192,8 @@ $$
 2 \times 1 \times 2048^2 = 2 \times 4.19 \times 10^6 \approx 8.39 \text{ MFLOPs}
 $$
 
-两者正好差 $M = 2048$ 倍，这就是为什么 Prefill 的计算量远大于 Decode。Decode 每次都要读取 `B_large` 的整个权重矩阵，所以它的算术强度是远低于现代GPU的算力/带宽比的。在数据里可以看到，在控制了相对严格的环境变量之后，Prefill由于计算量较大所以耗时明显高于Decode，而在Decode过程中因为
+两者正好差 $M = 2048$ 倍，这就是为什么 Prefill 的计算量远大于 Decode。Decode 每次都要读取 `B_large` 的整个权重矩阵，所以它的算术强度是远低于现代GPU的算力/带宽比的。在数据里可以看到，在控制了相对严格的环境变量之后，Prefill由于计算量较大所以耗时明显高于Decode，而在Decode过程中因为要反复搬运权重所以对于带宽的要求较高。
 ### A.4 模块三：内存布局
+
+	PyTorch 的 Tensor 底层是**一块连续内存 + stride（步长）** 来描述逻辑形状的。
+	连续情况下，CPU/GPU 一次加载一个 cache line（CPU 通常 64 字节，GPU 通常 128 字节）。
