@@ -180,6 +180,17 @@ Decode  (M=1)             0.287     116.81      67.14          233.74      73.0%
 ```
 
 大矩阵乘法模拟 prefill，大量token并行计算。M=1的情况模拟Decode过程，单token矩阵乘法。计算量上：
-	
-	
+Prefill：
+
+$$
+2MKN = 2 \times 2048^3 = 2 \times 8.59 \times 10^9 \approx 17.18 \text{ GFLOPs}
+$$
+
+单 token 的 Decode：
+
+$$
+2 \times 1 \times 2048^2 = 2 \times 4.19 \times 10^6 \approx 8.39 \text{ MFLOPs}
+$$
+
+两者正好差 $M = 2048$ 倍，这就是为什么 Prefill 的计算量远大于 Decode。
 ### A.4 模块三：内存布局
