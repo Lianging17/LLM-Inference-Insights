@@ -20,7 +20,12 @@
 		  检索
 			  **父子块**：子块用于检索，父块用于生成，兼顾精度和上下文
 			  **上下文增强**：给每块补一句“这是某公司 2024 年报第 3 节”，提升检索命中
-	 
+	 Embedding
+		 中文财报/公告 → Qwen3-Embedding-4B（精度 + 成本平衡）
+		 混合检索场景 → BGE-M3（dense + sparse 一套模型搞定）
+		 快速验证 → OpenAI text-embedding-3-small
+		 金融领域极致 → Fin-E5（需自部署，FinMTEB 排名第一）
+		
 
 
 面试问题：
