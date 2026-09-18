@@ -32,5 +32,55 @@
 	- 构建测试数据集（Evaluation Dataset）
 		你无法在整个数据库上凭空测召回率，必须先准备一个具有代表性的**黄金测试集**（建议包含 50 - 200 个问题）。
 	- 核心量化指标：Context Recall 的计算逻辑
-		- 在测试时，你把测试集的问题输入系统，记录系统捞上来的 `Retrieved Contexts`。然后利用一个强模型（如 GPT-4o）作为裁判，去比对**标准答案**与**检索到的切片**。
-		- 
+		- 在测试时，你把测试集的问题输入系统，记录系统捞上来的 `Retrieved Contexts`。然后利用一个强模型（如 GPT-4o）作为裁判，去比对**标准答案**与**检索到的切片**
+
+```
+【任务描述】
+请分析给定的“标准答案（Ground Truth）”和“检索到的上下文（Retrieved Context）”。
+1. 将标准答案拆解为独立的、原子级的事实陈述。
+2. 对于每个事实陈述，判断它是否可以从“检索到的上下文”中推导/找到。
+3. 如果能找到，标记为 [YES]；如果找不到，标记为 [NO]。
+
+【输入】
+问题: 公司的年假政策是什么？
+标准答案: 全职员工入职满一年可享受 5 天带薪年假，且年假必须在当年内休完。
+检索到的上下文: 公司为全职员工提供福利。入职满一年后，员工每年享有 5 天的带薪假。
+
+【LLM输出示例】
+- 事实 1: 全职员工入职满一年有 5 天带薪年假。 -> [YES]（在上下文中提及）
+- 事实 2: 年假必须在当年内休完。 -> [NO]（上下文中漏掉了这一条）
+
+最终得分: 1 / 2 = 0.5 (召回率为 50%)
+
+```
+
+
+```
+from ragas import evaluate
+from ragas.metrics import context_recall
+from datasets import Dataset
+
+# 1. 准备你的测试数据（运行你的 RAG 检索模块来收集 retrieved_contexts）
+data_samples = {
+    'question': ['如何修改账户密码？', '你们的退款政策是什么？'],
+    'contexts': [
+        ['用户可以点击右上角设置，进入安全中心修改密码。'], # 实际检索到的切片
+        ['收到商品后7天内支持无理由退货，但特价商品除外。'] 
+    ],
+    'ground_truth': [
+        '在个人设置的安全中心里可以修改密码。',            # 真实标准答案
+        '普通商品7天内可退，但特价商品不享受退换服务。'
+    ]
+}
+
+dataset = Dataset.from_dict(data_samples)
+
+# 2. 调用 RAGAs 评测（默认需要配置 OpenAI API Key 作为裁判）
+score = evaluate(dataset, metrics=[context_recall])
+
+# 3. 输出量化结果
+df = score.to_pandas()
+print(df[['question', 'context_recall']])
+print(f"系统平均召回率: {df['context_recall'].mean():.2f}")
+
+```
