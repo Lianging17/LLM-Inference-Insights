@@ -14,5 +14,4 @@
 - 内存受限 → 量化 + DiskANN
 评测时不能只看 QPS，要同时关注 Recall@K、P95/P99 Latency 和 Filter Performance[](https://cloud.tencent.cn/developer/article/2726511?policyId=1003#3)。高 QPS 但 recall 掉到 0.8 的系统，在金融场景是不可用的。
 5.**为什么不能只用 FAISS？**
-
 FAISS 是向量检索基础库，不是数据库。它不提供持久化、分布式、过滤检索、元数据管理、并发控制。金融场景需要元数据过滤（公司、报告期）、权限隔离、增量更新——这些都是数据库层的功能。面试时可以说：“FAISS 是引擎，向量库是整车。”
