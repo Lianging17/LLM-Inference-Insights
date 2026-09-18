@@ -33,7 +33,12 @@
 		Query → 稀疏(BM25/SPLADE) + 稠密(BGE-M3/Qwen3) 并行检索
 		→ RRF 融合 → Rerank 精排（bge-reranker-v2-m3）
 		→ Top-5 送入 LLM
-		
+	 **Agent编排**：StateGraph + 条件路由
+	 **LangGraph 为主线，Pydantic AI 做工具层类型约束，关键节点自研状态机。**
+		 LangGraph                             状态机 + 图编排
+		 LlamaIndex Workflows         事件驱动编排
+	 
+	
 	
 	 
 
@@ -75,7 +80,11 @@
 			有实测数据显示，在 FinanceBench 上稠密检索 Hit@5 为 0.820，BM25 仅 0.160，朴素 RRF 融合后反而退化到 0.760。原因是 BM25 在 10-K 文件中表现极差：**revenue、income、operating 等词在所有文档中高频出现，IDF 塌缩**，BM25 只能聚焦于罕见 token（往往是数字或格式残留），与自然语言查询不匹配。**混合检索需要加权或过滤，不能朴素等权融合。**[](https://www.linkedin.com/posts/devanshbhatt26_github-dbhatt90financebench-rag-lab-activity-7449612384975118336-1z6t#1)
 			**2. Rerank 的精度收益有量化依据**
 			在税法 RAG 案例中，BM25 + BGE-M3 混合检索将 recall 从 0.49 提升到 0.60（相对提升 11%），加上 bge-reranker-base 交叉编码器后，NDCG 从 0.39 提升到 0.44。[](https://xplorestaging.ieee.org/document/11268677)金融场景中，交叉编码器重排序在 MRR@5 上可实现 59% 的绝对提升。
-
+	 LangGraph 的关键概念：
+		- **State**：全局状态对象，所有节点共享，金融场景建议用 `TypedDict` 定义严格 schema
+		- **Node**：一个执行单元，可以是 LLM 调用、工具调用、纯代码
+		- **Edge**：节点间的连接，支持条件边（`add_conditional_edges`）
+		- **Checkpointer**：状态持久化，支持断点续跑和回放，金融审计刚需
 
 
 
@@ -83,4 +92,8 @@
 	**元数据拼接进 Embedding 文本**
 	 **向量维度与存储的权衡**
 	 **怎么做 Embedding 的 A/B 测试？**
+	 **显式状态机 vs 自由 Agent**：LangGraph 的做法：**图结构由开发者定义，LLM 只在节点内部做决策**（比如“这个查询该用哪个工具”），但节点间的跳转由条件边控制。
+	 **Checkpointer 实现断点续跑**：LangGraph 的 Checkpointer 把每一步的状态存到 Postgres/Redis，重启后从上次中断的节点继续，不用从头跑。这在生产环境是刚需。
+	 **人在回路（Human-in-the-Loop）**：金融场景高风险操作需要人工确认。LangGraph 支持 `interrupt_before` / `interrupt_after`，在关键节点（如“生成投资建议”）暂停，等待人工审批后继续。
+	 **多 Agent 协作的两种模式**：**Supervisor 模式**：一个主 Agent 调度多个子 Agent，子 Agent 之间不直接通信。适合金融研究，因为流程可控。
 	 
