@@ -34,10 +34,11 @@
 		→ RRF 融合 → Rerank 精排（bge-reranker-v2-m3）
 		→ Top-5 送入 LLM
 	 **Agent编排**：StateGraph + 条件路由
-	 **LangGraph 为主线，Pydantic AI 做工具层类型约束，关键节点自研状态机。**
+		 **LangGraph 为主线，Pydantic AI 做工具层类型约束，关键节点自研状态机。**
 		 LangGraph                             状态机 + 图编排
 		 LlamaIndex Workflows         事件驱动编排
-	 
+	 **OpenAI function calling（最通用）**
+		 
 	
 	
 	 
@@ -85,6 +86,12 @@
 		- **Node**：一个执行单元，可以是 LLM 调用、工具调用、纯代码
 		- **Edge**：节点间的连接，支持条件边（`add_conditional_edges`）
 		- **Checkpointer**：状态持久化，支持断点续跑和回放，金融审计刚需
+		**. 
+		
+		
+		
+
+
 
 
 
