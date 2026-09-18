@@ -29,6 +29,7 @@
 		MVP 阶段 → pgvector（已有 Postgres，零新组件）
 		生产阶段 → Qdrant（延迟敏感，过滤检索强）
 		超大规模 → Milvus（十亿级向量，高 QPS SLA）
+	 
 
 
 面试问题：
