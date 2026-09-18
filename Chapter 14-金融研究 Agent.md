@@ -25,7 +25,10 @@
 		 混合检索场景 → BGE-M3（dense + sparse 一套模型搞定）
 		 快速验证 → OpenAI text-embedding-3-small
 		 金融领域极致 → Fin-E5（需自部署，FinMTEB 排名第一）
-		
+	向量库
+		MVP 阶段 → pgvector（已有 Postgres，零新组件）
+		生产阶段 → Qdrant（延迟敏感，过滤检索强）
+		超大规模 → Milvus（十亿级向量，高 QPS SLA）
 
 
 面试问题：
