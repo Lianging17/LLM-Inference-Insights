@@ -29,7 +29,7 @@
 		MVP 阶段 → pgvector（已有 Postgres，零新组件）
 		生产阶段 → Qdrant（延迟敏感，过滤检索强）
 		超大规模 → Milvus（十亿级向量，高 QPS SLA）
-	 **检索与 Rerank**
+	 **检索与 Rerank(交叉)**
 		Query → 稀疏(BM25/SPLADE) + 稠密(BGE-M3/Qwen3) 并行检索
 		→ RRF 融合 → Rerank 精排（bge-reranker-v2-m3）
 		→ Top-5 送入 LLM
@@ -71,6 +71,10 @@
 			 RRF（Reciprocal Rank Fusion）的核心逻辑：对每个文档在多个排序列表中的排名取倒数求和，公式为 `1/(rank + k)`，k 通常设为 60。在多个检索方法中排名都靠前的文档，融合后排名更高。
 		**Rerank：精排阶段**
 			|bge-reranker-v2-m3|418MB|63.55|72ms|综合最佳，中文场景首选|
+			**1. 混合检索不是自动更好，需要调权**
+			有实测数据显示，在 FinanceBench 上稠密检索 Hit@5 为 0.820，BM25 仅 0.160，朴素 RRF 融合后反而退化到 0.760。原因是 BM25 在 10-K 文件中表现极差：**revenue、income、operating 等词在所有文档中高频出现，IDF 塌缩**，BM25 只能聚焦于罕见 token（往往是数字或格式残留），与自然语言查询不匹配。**混合检索需要加权或过滤，不能朴素等权融合。**[](https://www.linkedin.com/posts/devanshbhatt26_github-dbhatt90financebench-rag-lab-activity-7449612384975118336-1z6t#1)
+			**2. Rerank 的精度收益有量化依据**
+			在税法 RAG 案例中，BM25 + BGE-M3 混合检索将 recall 从 0.49 提升到 0.60（相对提升 11%），加上 bge-reranker-base 交叉编码器后，NDCG 从 0.39 提升到 0.44。[](https://xplorestaging.ieee.org/document/11268677)金融场景中，交叉编码器重排序在 MRR@5 上可实现 59% 的绝对提升。
 
 
 
