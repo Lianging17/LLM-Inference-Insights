@@ -1,4 +1,4 @@
-**20260902 关于20260829问题的答复**
+
 
 1. **pytorch 是什么，为什么在大模型框架里被使用，解决了什么问题**
 
@@ -82,8 +82,6 @@
 - 如果 Milvus 挂了，或者 Embedding 接口超时了，你的系统是直接报错，还是自动降级到传统数据库的 Elasticsearch（BM25 关键词检索）去撑住业务？
 - 数据治理的脏活累活
 
-- 2.
-
 - 11. hugging face为什么会有transformer库？
 
 - 回答1是[**Hugging Face Transformers**](https://huggingface.co/docs/transformers/index) 是目前全球最流行、核心的**开源 AI 模型工具库**。它就像是 AI 领域的“通用软件播放器”。在过去，不同机构发布的 AI 模型（如 BERT、GPT、Llama）需要使用不同的专用代码才能运行。而 Transformers 库提供了一个**统一的 Python 代码框架**，让开发者用几行代码就能下载、运行和微调数万个顶尖的预训练模型。
@@ -116,18 +114,6 @@
 
 - Function Calling是**1次交互**。问 -> 决定调用 -> 返回结果 -> 生成回答。**无状态**。
 - 工作流 / Agent是**N次交互**。包含多个步骤，有前后依赖关系。**有状态**。整个流程共享一个上下文（Context），上一步查到的订单号，下一步直接用来退款。
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
 
 - Billion是十亿单位
 - LLaMA（Large Language Model Meta AI）是由 Meta 开发并开源的大型语言模型家族。（==可以了解硬件与部署要求和微调与推理方法==）

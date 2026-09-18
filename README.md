@@ -2,6 +2,8 @@
 - [ ] **Chapter 02**：现代 C++ 与 CUDA 编程基础：从 CPU 内存对齐到 GPU 线程模型
 - [ ] **Chapter 03**：Transformer 推理流水线拆解：Prefill（前序阶段）与 Decode（生成阶段）的系统瓶颈
 - [ ] **Chapter 04**：vLLM 核心源码剖析：Scheduler 调度机制与 PagedAttention 显存管理
-
-
+想填的坑
+- [ ] **Chapter 02**：现代 C++ 与 CUDA 编程基础：从 CPU 内存对齐到 GPU 线程模型
+- [ ] **Chapter 03**：Transformer 推理流水线拆解：Prefill（前序阶段）与 Decode（生成阶段）的系统瓶颈
+- [ ] **Chapter 04**：vLLM 核心源码剖析：Scheduler 调度机制与 PagedAttention 显存管理
 
