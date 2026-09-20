@@ -1,5 +1,10 @@
 # 金融研究 Agent 项目说明书
 
+
+cd "/Users/scarlet/Documents/Obsidian Vault/financial-research-agent"
+git tag -a v0.1.0 -m "..."
+git push origin v0.1.0
+
 > 本文档用于指导 AI 编码助手（Codex / Claude Code）生成项目脚手架与核心实现。  
 > 目标：构建一个**可审计、可追溯、多源异构数据、混合检索、带验证风控**的金融研究 Agent。
 
