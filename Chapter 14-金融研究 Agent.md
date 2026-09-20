@@ -135,3 +135,5 @@
 	 **人在回路（Human-in-the-Loop）**：金融场景高风险操作需要人工确认。LangGraph 支持 `interrupt_before` / `interrupt_after`，在关键节点（如“生成投资建议”）暂停，等待人工审批后继续。
 	 **多 Agent 协作的两种模式**：**Supervisor 模式**：一个主 Agent 调度多个子 Agent，子 Agent 之间不直接通信。适合金融研究，因为流程可控。
 	 
+
+
