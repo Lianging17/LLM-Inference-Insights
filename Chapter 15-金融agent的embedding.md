@@ -1,9 +1,11 @@
 1.**混合检索的实现方式**
 
 金融场景需要 dense + sparse 混合检索。Qdrant 内置稀疏向量和 BM25 支持，不需要额外维护 Elasticsearch[](https://www.dtstack.com/zh-cn/blogs/vector-database-selection-guide/#1)。Milvus 支持多向量混合检索。pgvector 则需要自行组合，通常配合 PostgreSQL 的全文检索（`tsvector`）做混合。
+
 2.**量化压缩控制内存成本**
 
 金融文档库动辄百万级 chunk，1024 维 FP32 向量的内存占用很大。Qdrant 内置标量量化、乘积量化、二值量化[](https://www.dtstack.com/zh-cn/blogs/vector-database-selection-guide/#1)。实测表明，经过量化的 HNSW 索引可使内存占用降低 70%，同时保持 95% 以上的召回率[](https://developer.baidu.com/article/detail.html?id=7196080#1)。工程上需要做量化前后的 recall 对比，确保精度损失可接受。
+
 3.**金融场景的真实案例**
 	**Qdrant + 养老金咨询**：Xaver 的 AI 金融咨询平台使用 Qdrant 构建双层知识引擎，第一层是精简知识库（预总结答案，近乎瞬时调用），第二层是完整知识库（监管、金融、政策文件的深度语料），在典型对话场景下缩短了 2-3 秒响应时间[](https://qdrant.org.cn/blog/case-study-xaver/#how-xaver-built-its-ai-knowledge-engine-with-qdrant)。
     **Qdrant + 银行多模态 RAG**：某银行业知识访问系统使用 BGE-M3 生成 embedding，按模态分别存入不同的 Qdrant collection，配合 RAG-Fusion 做查询改写和多路召回融合，在内部银行数据集上准确率和可解释性均优于纯文本 RAG baseline[](https://neurips.cc/virtual/2025/loc/san-diego/133791)。
