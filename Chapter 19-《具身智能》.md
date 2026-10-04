@@ -69,7 +69,10 @@
 2. 前额叶皮质的工作主要是通过神经元的联结，每个神经元通过突触与其他神经元相连。
 3. 联结主义学派的第一个法宝是“并行分布式计算”。
 4. 计算机是如何实现“思考”的？
-	1. 一类是dj da
+	1. 一类是单打独斗的计算，称之为串行计算。串行就是一步一步地执行计算指令，下一步指令可能会依赖上一步的结果。
+	2. 并行计算
+5. CPU（中央处理器）是串行计算的代表，擅长处理逻辑运算。A ==Graphics Processing Unit== (GPU) is a specialized electronic chip designed to process massive amounts of data at the same time using parallel computing.
+6. CUDA is NVIDIA’s platform for accelerated computing and the foundation for GPU computing.
 
 ---
 
