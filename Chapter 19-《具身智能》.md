@@ -52,9 +52,7 @@
 
 ## 三、章节笔记
 #### 摘录
-1. 我们了解某一时刻的宇宙，就能预测将来会发生什么，这就是统治了科学界数百年的因果律。（causality）
-2. 
-
+1. 我们了解某一时刻的宇宙，就能预测将来会发生什么，这就是统治了科学界数百年的因果律。（causality）（同时我读了荣格的《共时性》，这本书基本上从反面冲击了因果律）
 ---
 
 ### 第一章 符号主义的野望
@@ -73,16 +71,13 @@
 	2. 并行计算
 5. CPU（中央处理器）是串行计算的代表，擅长处理逻辑运算。A ==Graphics Processing Unit== (GPU) is a specialized electronic chip designed to process massive amounts of data at the same time using parallel computing.
 6. CUDA is NVIDIA’s platform for accelerated computing and the foundation for GPU computing.
-
 ---
 
 ### 第三章 行为主义的世界很大
 
-#### 核心命题
-#### 关键概念
-#### 论证脉络
-#### 我的思考
 #### 摘录
+1.人类处理信息分为以下四层：感知层 + 预处理层 + 认知层 + 执行层。
+2.
 
 ---
 
